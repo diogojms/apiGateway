@@ -14,4 +14,7 @@ RUN npm install
 COPY . .
 
 EXPOSE 8080
-CMD [ "node", "index.js" ]
+CMD [ "node", "server.js" ]
+
+#docker build -t api-gateway . 
+#docker run --name api-gateway -p 8080:8080 -d api-gateway
