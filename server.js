@@ -1,71 +1,90 @@
 const express = require("express");
-const httpProxy = require("http-proxy");
-const bodyParser = require('body-parser');
-const rp = require("request-promise-native");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
-const proxy = httpProxy.createProxyServer();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false })); //parse application/x-www-form-urlencoded
+const routes = [
+  {
+    context: "/auth",
+    target: `http://${process.env.AUTH_URI}:8081`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/auth": "/auth" },
+  },
+  {
+    context: "/user",
+    target: `http://${process.env.AUTH_URI}:8081`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/user": "/user" },
+  },
+  {
+    context: "/logs",
+    target: `http://${process.env.LOGS_URI}:8082`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/logs": "/logs" },
+  },
+  {
+    context: "/product",
+    target: `http://${process.env.PRODUCTS_URI}:8083`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/product": "/product" },
+  },
+  {
+    context: "/stock",
+    target: `http://${process.env.PRODUCTS_URI}:8083`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/stock": "/stock" },
+  },
+  {
+    context: "/service",
+    target: `http://${process.env.SERVICES_URI}:8084`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/service": "/service" },
+  },
+  {
+    context: "/order",
+    target: `http://${process.env.ORDERS_URI}:8085`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/order": "/order" },
+  },
+  {
+    context: "/stores",
+    target: `http://${process.env.STORES_URI}:8086`,
+    secure: false,
+    auth: false,
+    changeOrigin: true,
+    pathRewrite: { "^/stores": "/stores" },
+  },
 
-const port = 8080;
+];
 
-app.get("/", (req, res) => {
-  res.status(200).send("Hello World!");
+routes.forEach((route) => {
+  app.use(
+    route.context,
+    createProxyMiddleware({
+      target: route.target,
+      pathRewrite: route.pathRewrite,
+      changeOrigin: true,
+      secure: false,
+    })
+  );
 });
 
-// app.use('/users/auth/login', (req, res) => {
-//   console.log('Before proxy.web call');
-//   console.log(process.env.AUTH_URI)
-//   proxy.web(req, res, { target: `http://${process.env.AUTH_URI}:8081/auth/login` });
-//   console.log('After proxy.web call');
-// });
-
- 
-const userServiceRootUrl = `http://${process.env.AUTH_URI}:8081/auth/login`;
- 
-app.use("/users/auth/login", bodyParser.json(), async (req, res) => {
-   // console.log("/users/auth/login path:", req.params[0]);
-    const user = await rp({ baseUrl: userServiceRootUrl, body: req.body, json: true, method: 'POST' });
-    try {
-      res.status(200).json({
-        token: token,
-        tokenValidation: tokenValidation
-    });
-    } catch (error) {
-      console.error(error);
-    }
-    
-});
-
-app.use('/logs', (req, res) => {
-  console.log('Before proxy.web call');
-  proxy.web(req, res, { target: `http://${process.env.LOGS_URI}:8082` });
-  console.log('After proxy.web call');
-});
-
-app.use('/products', (req, res) => {
-  console.log('Before proxy.web call');
-  proxy.web(req, res, { target: `http://${process.env.LOGS_URI}:8083` });
-  console.log('After proxy.web call');
-});
-
-app.use('/services', (req, res) => {
-  console.log('Before proxy.web call');
-  proxy.web(req, res, { target: `http://${process.env.LOGS_URI}:8084` });
-  console.log('After proxy.web call');
-});
-
-// Manipulador de erro para o proxy
-proxy.on('error', (err, req, res) => {
-  console.error(err);
-  res.status(500).send('Erro interno no servidor de proxy.');
-});
-
+const port = process.env.port || 8080;
 app.listen(port, () => {
-  console.log(`API Gateway running on port ${port}`);
+    console.log(`Server listening on port ${port}`);
 });
-
-
