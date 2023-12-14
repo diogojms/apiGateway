@@ -28,6 +28,7 @@ const routes = [
     auth: false,
     changeOrigin: true,
     pathRewrite: { "^/api-docs-auth": "/api-docs-auth" },
+    pathRewrite: { "^/api-docs-auth/": "/api-docs-auth/" },
   },
   {
     context: "/logs",
@@ -60,6 +61,7 @@ const routes = [
     auth: false,
     changeOrigin: true,
     pathRewrite: { "^/api-docs-products": "/api-docs-products" },
+    pathRewrite: { "^/api-docs-products/": "/api-docs-products/" },
   },
   {
     context: "/service",
@@ -76,6 +78,7 @@ const routes = [
     auth: false,
     changeOrigin: true,
     pathRewrite: { "^/api-docs-services": "/api-docs-services" },
+    pathRewrite: { "^/api-docs-services/": "/api-docs-services/" },
   },
   {
     context: "/order",
@@ -92,6 +95,7 @@ const routes = [
     auth: false,
     changeOrigin: true,
     pathRewrite: { "^/api-docs-orders": "/api-docs-orders" },
+    pathRewrite: { "^/api-docs-orders/": "/api-docs-orders/" },
   },
   {
     context: "/stores",
@@ -108,6 +112,7 @@ const routes = [
     auth: false,
     changeOrigin: true,
     pathRewrite: { "^/api-docs-stores": "/api-docs-stores" },
+    pathRewrite: { "^/api-docs-stores/": "/api-docs-stores/" },
   },
 
 ];
