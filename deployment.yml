@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcc-gateway
+  labels:
+    app: pcc-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pcc-gateway
+  template:
+    metadata:
+      labels:
+        app: pcc-gateway
+    spec:
+      containers:
+        - name: pcc-gateway
+          image: diogojms/pcc_gateways:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGODB_URI
+              value: "mongodb+srv://DriveCleaner:DriveCleanerG7@cluster0.bj3pzfe.mongodb.net/User"
+            - name: SECRET
+              value: "jfcnbjsnwdelwjcnewdlejbsfew"
+            - name: LOGS_URI
+              value: "guest:guest@rabbitmq:5672/"
+            - name: AUTH_URI
+              value: "auth"
+            - name: PRODUCTS_URI
+              value: "products"
+            - name: SERVICES_URI
+              value: "services"
+            - name: ORDERS_URI
+              value: "orders"
+            - name: STORES_URI
+              value: "stores"
