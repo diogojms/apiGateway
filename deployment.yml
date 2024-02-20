@@ -21,10 +21,6 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: MONGODB_URI
-              value: "mongodb+srv://DriveCleaner:DriveCleanerG7@cluster0.bj3pzfe.mongodb.net/User"
-            - name: SECRET
-              value: "jfcnbjsnwdelwjcnewdlejbsfew"
             - name: LOGS_URI
               value: "guest:guest@rabbitmq:5672/"
             - name: AUTH_URI
